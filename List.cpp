@@ -1,3 +1,5 @@
+#pragma once
+
 namespace List{
 
 	template <typename T>
@@ -72,6 +74,16 @@ namespace List{
 		unsigned long size_ = 0;
 
 	public:
+		List_t(Node_t<T>* new_node){
+			this->head_ = this->tail_ = new_node;
+		}
+
+		List_t(T new_val){
+			this->head_ = this->tail_ = new Node_t<T>(new_val);
+		}
+
+		List_t() {};
+
 		Node_t<T>* head(){
 			return this->head_;
 		}
