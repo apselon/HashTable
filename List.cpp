@@ -35,11 +35,13 @@ namespace ListNS {
 		Node_t* push_front(Node_t* new_node);
 		Node_t* push_front(T new_val);
 
+		unsigned long long size();
+
 	private:
 		Node_t* head_ = nullptr;
 		Node_t* tail_ = nullptr;
+		unsigned long long size_ = 0;
 
-		unsigned long size_ = 0;
 
 	};
 
@@ -114,7 +116,10 @@ namespace ListNS {
 		return this->insert_before(new List<T>::Node_t(new_val));
 	}
 
-
+	template <typename T>
+	unsigned long long List<T>::size(){
+		return this->size_;
+	}
 
 	template <typename T>
 	typename List<T>::Node_t* List<T>::head(){
@@ -137,6 +142,7 @@ namespace ListNS {
 			this->head_ = this->tail_ = new_node;
 		}
 
+		++this->size_;
 		return new_node;
 	}
 
@@ -156,6 +162,7 @@ namespace ListNS {
 			this->head_ = this->tail_ = new_node;
 		}
 
+		++this->size_;
 		return new_node;
 	}
 
