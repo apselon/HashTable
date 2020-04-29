@@ -2,28 +2,27 @@
 
 #include "List.cpp"
 
-namespace HashTable{
+namespace HashTableNS {
 
 	template <typename T1, typename T2>
-	class Pair_t {
+	struct Pair_t {
 		T1 first;
 		T2 second;
 		Pair_t(T1 first, T2 second): first(first), second(second) {};
 	};
 
-	template <typename key_t, typename val_t, typename Hash_f, unsigned long size>
-	class HashTable_t {
+	template <typename key_t, typename val_t, unsigned long (*hash)(key_t), int (*cmp)(key_t, key_t), unsigned long max_size = 257>
+	class HashTable {
 	private:
 
-		List::List_t<Pair_t<key_t, val_t>>* table = new List::List_t<Pair_t<key_t, val_t>>[size]();
-		Hash_f hash = {};
+		ListNS::List<Pair_t<key_t, val_t>>* table = new ListNS::List<Pair_t<key_t, val_t>>[max_size]();
 
 	public:
-		HashTable_t(Hash_f hash): hash(hash) {};
-		
+		HashTable() = default;
+
 		unsigned long insert(key_t key, val_t val){
 
-			auto h = hash(key);
+			auto h = hash(key) % max_size;
 			table[h].push_back(Pair_t<key_t, val_t>(key, val));
 
 			return h;
@@ -33,19 +32,22 @@ namespace HashTable{
 			return insert(pair.first, pair.second);
 		}
 		
-		val_t find(key_t key){
+		typename ListNS::List<Pair_t<key_t, val_t>>::Node_t* find(key_t key){
 
-			auto h = hash(key);
+			auto h = hash(key) % max_size;
 			auto cur = table[h].head();
 
 			while (cur != nullptr){
-				if (cur.key.first == key) return cur.key.second;
-				cur = cur.next();
+				if (cmp(cur->key.first, key) == 0) return cur;
+				cur = cur->next();
 			}
 			
-			return {};
+			return nullptr;
 		}
 
+		~HashTable(){
+
+		}
 
 	};
 };
