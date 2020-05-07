@@ -41,10 +41,38 @@ unsigned long hash(const char* key){
             .att_syntax
     )"
         :"=r"(h)
-		:"D"(key)
-		);
+        :"D"(key)
+    );
 
-		return h;
+        return h;
 
 }
+```
+Overall performance improved by 5%
+
+### Selecting Hash Function
+Jenkins hash is quite good, as you can see in the diagram above, hovewer it is not the fastest one. So I decided to use a crc32 hash, because of it's great distribution characteristic and hardware support.
+```C++
+inline unsigned long hash(const char* data){
+
+    unsigned long h = 0;
+    asm(R"(
+        .intel_syntax noprefix
+        lea rax, [%1]
+        xor %0, %0
+    hashing:
+        crc32 %0, byte ptr [rax]
+        inc rax
+        cmp byte ptr [rax], 0
+        jne hashing
+        .att_syntax prefix
+    )"
+        : "=r"(h)
+        : "r"(data)
+        : "rax", "rcx"
+	);    
+
+    return h;
+}
+
 ```
