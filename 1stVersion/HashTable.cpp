@@ -38,5 +38,9 @@ public:
 
 		return cur;
 	}
+
+	~HashTable(){
+		delete [] table;
+	}
 };
 

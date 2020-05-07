@@ -11,10 +11,20 @@ class List {
 
 	void push_front(Node<T>* new_node){
 
-		assert(new_node != nullptr);
-
 		new_node->next_ = this->head_;
 		this->head_ = new_node;
 		++this->size_;
+	}
+
+	~List() {
+
+		Node<T>* cur = this->head_;
+		Node<T>* next = nullptr;
+
+		while (cur != nullptr){
+			next = cur->next_;
+			delete cur;
+			cur = next;
+		}
 	}
 };

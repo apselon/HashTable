@@ -1,4 +1,7 @@
 #pragma once
+#include <climits>
+#include <immintrin.h>
+#include <cstdint>
 #include "List.cpp"
 
 template <typename T1, typename T2>
@@ -7,9 +10,34 @@ struct Pair_t {
 	T2 second;
 };
 
-template <typename key_t, typename val_t, unsigned long (*hash)(key_t), int (*cmp)(key_t, key_t), unsigned long max_size>
+	
+inline unsigned long hash(const char* data){
+
+    unsigned int h = 0;
+		asm(R"(
+		.intel_syntax noprefix
+	    lea rax, [%1]
+	    xor %0, %0
+	hashing:
+	    crc32 %0, byte ptr [rax]
+	    inc rax
+	    cmp byte ptr [rax], 0
+	    jne hashing
+	    .att_syntax prefix
+	)"
+
+	    : "=r"(h)
+	    : "r"(data)
+	    : "rax", "rcx");	
+
+    return h;
+}
+
+
+template <typename key_t, typename val_t, int (*cmp)(key_t, key_t), unsigned long max_size>
 class HashTable {
 public:
+
 	List<Pair_t<key_t, val_t>>* table = nullptr; 
 
 	HashTable(){
@@ -26,17 +54,19 @@ public:
 	Node<Pair_t<key_t, val_t>>* find(key_t key){
 
 		unsigned long h = hash(key) % max_size;
+
 		Node<Pair_t<key_t, val_t>>* cur = table[h].head_;
 
 		while (cur != nullptr){
-			if (cmp(key, cur->val.first) == 0){
-				return cur;
-			}
-
+			if (cmp(cur->val.first, key) == 0) break;
 			cur = cur->next_;
 		}
 
 		return cur;
+	}
+
+	~HashTable(){
+		delete [] table;
 	}
 };
 
