@@ -19,7 +19,7 @@ int main(void){
 	int num_lines = count_lines(whole_text, len, '\0');
 	char** text = divide_lines(whole_text, num_lines, len);
 
-	auto t = HashTable<const char*, int, strcmp, 2953>();
+	auto t = HashTable<const char*, int, strcmp, 509>();
 
 	for (int i = 0; i < num_lines; ++i){
 		t.insert(text[i], i);

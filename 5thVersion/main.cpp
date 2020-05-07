@@ -11,7 +11,8 @@ char** divide_lines(char* whole_text, long int num_lines, long int num_chars);
 
 int main(void){
 
-	FILE* input = fopen("../words_alpha.txt", "r");
+
+	FILE* input = fopen("../opt_words_alpha.txt", "r");
 
 	size_t len = count_chars(input);
 	char* whole_text = read_text(input, len); 
@@ -19,7 +20,8 @@ int main(void){
 	int num_lines = count_lines(whole_text, len, '\0');
 	char** text = divide_lines(whole_text, num_lines, len);
 
-	auto t = HashTable<const char*, int, strcmp, 509>();
+
+	auto t = HashTable<const char*, int, 509>();
 
 	for (int i = 0; i < num_lines; ++i){
 		t.insert(text[i], i);
@@ -28,21 +30,7 @@ int main(void){
 	int d = 0;
 	for (int i = 0; i < num_lines; ++i){
 		d = t.find(text[i])->val.second;
-
-		if (d != i && text[i][0] >= '!'){
-			printf("should be %d, got %d\n", i, d);
-		}
 	}
-
-	/*
-	for (int i = 0; i < num_lines; ++i){
-		d = t.find(text[i])->val.second;
-
-		if (d != i && text[i][0] >= '!'){
-			printf("should be %d, got %d\n", i, d);
-		}
-	}
-	*/
 
 	printf("Finished!\n");
 
@@ -103,7 +91,7 @@ char** divide_lines(char* whole_text, long int num_lines, long int num_chars){
 
 	for (int i = 0; i < num_chars; ++i){
 		if (prev_c == '\0'){
-			lines[cur_l] = &(whole_text[i]);
+			lines[cur_l] = &whole_text[i]; 
 			++cur_l;
 		}
 

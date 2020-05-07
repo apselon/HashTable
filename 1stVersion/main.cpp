@@ -20,7 +20,7 @@ int main(void){
 	int num_lines = count_lines(whole_text, len, '\0');
 	char** text = divide_lines(whole_text, num_lines, len);
 
-	auto t = HashTable<const char*, int, one_at_a_time, strcmp, 2953>();
+	auto t = HashTable<const char*, int, one_at_a_time, strcmp, 509>();
 	printf("Adding %d words in table.\n", num_lines);
 
 	for (int i = 0; i < num_lines; ++i){
