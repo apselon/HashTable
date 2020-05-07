@@ -69,9 +69,9 @@ unsigned long one_at_a_time_asm(const char* key){
 
         movsx   rax, BYTE PTR [rdi]
         test    al, al
-        je      .MyL4
+        je      .MyLibL4
         xor     edx, edx
-.MyL3:
+.MyLibL3:
         add     rax, rdx
         add     rdi, 1
         mov     rdx, rax
@@ -82,7 +82,7 @@ unsigned long one_at_a_time_asm(const char* key){
         xor     rdx, rax
         movsx   rax, BYTE PTR [rdi]
         test    al, al
-        jne     .MyL3
+        jne     .MyLibL3
         lea     rdx, [rdx+rdx*8]
         mov     rax, rdx
         shr     rax, 11
@@ -90,11 +90,11 @@ unsigned long one_at_a_time_asm(const char* key){
         mov     rdx, rax
         sal     rdx, 15
         add     rax, rdx
-		jmp .MyExit
+		jmp .MyLibExit
 
-.MyL4:
+.MyLibL4:
         xor     eax, eax
-.MyExit:
+.MyLibExit:
 		.att_syntax
 	)"
 	:"=r"(d)
