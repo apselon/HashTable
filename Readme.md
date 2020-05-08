@@ -79,6 +79,7 @@ inline unsigned long hash(const char* data){
 Now overall performance improved by 10%
 
 ### Improving strcmp
+Analysis of my word corpus showed that there is now word longer then 27, so I decided to allign all strings to 32 and compare it by chunks of 8 symbosl.
 ```C++
 int ull_cmp(const char* a, const char* b){
 
@@ -97,6 +98,8 @@ int ull_cmp(const char* a, const char* b){
 
 	return 0;
 }
+```
+Same function optimized and rewritten in assembly.
 
 ```C++
 int ull_cmp(const char* a, const char* b){
@@ -134,23 +137,7 @@ int ull_cmp(const char* a, const char* b){
     return d;
 }
 ```
----
-```C+++
-int avx_cmp(const char *a, const char *b) {
-
-    __m128i xmm0, xmm1;
-    unsigned int eax;
-
-    xmm0 = _mm_loadu_si128((__m128i*)(a));
-    xmm1 = _mm_loadu_si128((__m128i*)(b));
-    xmm0 = _mm_cmpeq_epi8(xmm0, xmm1);
-    eax = _mm_movemask_epi8(xmm0);
-
-    if (eax == 0xffff) return 0;
-        return -1; 
-}
-```
-
+Decided to improve a performace even more and rewrited function using sse.
 ```C++
 inline int avx_cmp(const char *a, const char *b) {
 
@@ -177,3 +164,11 @@ inline int avx_cmp(const char *a, const char *b) {
     return d;
 }
 ```
+Attempt | Run Time | Delta
+--- | --- | ---
+1 | 17.741 | -
+2 | 17.495 | 2%
+3 | 16.879 | 4%
+4 | 15.270 | 10%
+
+__Overall perforamance gain: 17%
