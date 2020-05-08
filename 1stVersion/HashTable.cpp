@@ -44,3 +44,5 @@ public:
 	}
 };
 
+const unsigned long MAX_NUM_LINES = 364245;
+const unsigned long MAX_NUM_CHARS = 32 * MAX_NUM_LINES;

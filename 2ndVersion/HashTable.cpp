@@ -12,7 +12,7 @@ struct Pair_t {
 	unsigned long hash(const char* key){
 	    unsigned long d = 0;
 
-	    asm volatile(R"(
+	    asm (R"(
 	        .intel_syntax noprefix
 	
 	        movsx   rax, BYTE PTR [rdi]
@@ -92,3 +92,5 @@ public:
 	}
 };
 
+const unsigned long MAX_NUM_LINES = 364245;
+const unsigned long MAX_NUM_CHARS = 32 * MAX_NUM_LINES;

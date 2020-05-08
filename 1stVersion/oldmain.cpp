@@ -2,33 +2,38 @@
 #include <cstring>
 #include <immintrin.h>
 #include "HashTable.cpp"
+#include "../HashFunctions.cpp"
 
 int count_chars(FILE* file);
-char* read_text(FILE* file);
+char* read_text(FILE* file, long int num_chars);
 void change_divider(char* whole_text, long int num_chars, char old_divider, char new_divider);
 long int count_lines(char* whole_text, long int num_chars, char divider);
 char** divide_lines(char* whole_text, long int num_lines, long int num_chars);
 
 int main(void){
 
+	FILE* input = fopen("../words_alpha.txt", "r");
 
-	FILE* input = fopen("../opt_words_alpha.txt", "r");
-
-	size_t len = MAX_NUM_CHARS; 
-	size_t num_lines = MAX_NUM_LINES; 
-	char* whole_text = read_text(input); 
+	size_t len = count_chars(input);
+	char* whole_text = read_text(input, len); 
+	change_divider(whole_text, len, '\n', '\0');
+	int num_lines = count_lines(whole_text, len, '\0');
 	char** text = divide_lines(whole_text, num_lines, len);
 
-	auto t = HashTable<const char*, size_t, 509>();
+	auto t = HashTable<const char*, int, one_at_a_time, strcmp, 509>();
+	printf("Adding %d words in table.\n", num_lines);
 
-	for (size_t i = 0; i < num_lines; ++i){
+	for (int i = 0; i < num_lines; ++i){
 		t.insert(text[i], i);
 	}
 
-	size_t d = 0;
-	for (size_t i = 0; i < num_lines; ++i){
+	int d = 0;
+	for (int i = 0; i < num_lines; ++i){
 		d = t.find(text[i])->val.second;
-		if (d != i) printf("wrong: got %lu, expected %lu\n", d, i);
+
+		if (d != i && text[i][0] >= '!'){
+			printf("Should be %d, got %d\n", i, d);
+		}
 	}
 
 	printf("Finished!\n");
@@ -52,17 +57,12 @@ int count_chars(FILE* file){
 	return num_chars;
 }
 
-char* read_text(FILE* file){
+char* read_text(FILE* file, long int num_chars){
 
-	char* whole_text = new char[MAX_NUM_CHARS + 10]; 
-	char* start = whole_text;
+	char* whole_text = new char[num_chars]; 
+	fread(whole_text, sizeof(char), num_chars, file);
 
-	for (unsigned int i = 0; i < MAX_NUM_LINES; ++i){
-		fscanf(file, "%s", whole_text);
-		whole_text += 32;
-	}
-
-	return start;
+	return whole_text;
 }
 
 void change_divider(char* whole_text, long int num_chars, char old_divider, char new_divider){
@@ -88,12 +88,19 @@ long int count_lines(char* whole_text, long int num_chars, char divider){
 
 char** divide_lines(char* whole_text, long int num_lines, long int num_chars){
 
-	char** lines = new char* [num_lines + 10]();
+	char** lines = new char* [num_lines + 1];
 
-	for (int i = 0; i < num_lines; ++i){
-			 lines[i] = whole_text;
-			 whole_text += 32;
+	char prev_c = '\0';
+	int cur_l = 0;
+
+	for (int i = 0; i < num_chars; ++i){
+		if (prev_c == '\0'){
+			lines[cur_l] = &(whole_text[i]);
+			++cur_l;
 		}
+
+		prev_c = whole_text[i];
+	}
 
 	return lines;
 }

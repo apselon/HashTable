@@ -33,18 +33,64 @@ unsigned long hash(const char* data){
     return h;
 }
 
-inline int fast_cmp(const char *a, const char *b) {
+int ull_cmp(const char* a, const char* b){
+	int d = -1;
 
-	__m128i xmm0, xmm1; 
-	unsigned int eax; 
+	asm (R"(
 
-	xmm0 = _mm_loadu_si128((__m128i*)(a)); 
-	xmm1 = _mm_loadu_si128((__m128i*)(b)); 
-	xmm0 = _mm_cmpeq_epi8(xmm0, xmm1); 
-	eax = _mm_movemask_epi8(xmm0); 
+		.intel_syntax noprefix
+	    mov     rax, QWORD PTR [rdi]
+        cmp     QWORD PTR [rsi], rax
+        jne     different 
+        mov     rax, QWORD PTR [rsi+8]
+        cmp     QWORD PTR [rdi+8], rax
+        jne     different 
+        mov     rax, QWORD PTR [rsi+16]
+        cmp     QWORD PTR [rdi+16], rax
+        jne     different 
+        mov     rax, QWORD PTR [rsi+24]
+        cmp     QWORD PTR [rdi+24], rax
+        jne     different 
 
-	if (eax == 0xffff) return 0;
-		return -1;
+		mov %0, 0
+		jmp exit
+
+	different:
+			mov %0, -1;
+
+	exit:
+		.att_syntax
+		)"
+		:"=r"(d)
+		:"D"(a), "S"(b)
+		);
+	
+	return d;
+}
+
+inline int avx_cmp(const char *a, const char *b) {
+
+	int d = -1;
+
+	asm (R"(
+		.intel_syntax noprefix
+		movdqu xmm0, XMMWORD PTR [%1]
+		movdqu xmm1, XMMWORD PTR [%2]
+		pcmpeqb xmm0, xmm1
+		pmovmskb eax, xmm0
+		cmp eax, 0xffff
+		setne al
+		movzx eax, al
+		neg eax
+		mov %0, eax
+		.att_syntax
+	)"
+		:"=r"(d)
+		:"r"(a), "r"(b)
+		:"eax", "xmm0", "xmm1"
+		);
+
+	return d;
 }
 
 
@@ -72,7 +118,8 @@ public:
 		Node<Pair_t<key_t, val_t>>* cur = table[h].head_;
 
 		while (cur != nullptr){
-			if (fast_cmp(cur->val.first, key) == 0) break;
+			if (strcmp(key, cur->val.first) == 0) break;
+
 			cur = cur->next_;
 		}
 
@@ -84,3 +131,5 @@ public:
 	}
 };
 
+const unsigned long MAX_NUM_LINES = 364245;
+const unsigned long MAX_NUM_CHARS = 32 * MAX_NUM_LINES;
