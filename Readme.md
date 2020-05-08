@@ -49,7 +49,7 @@ unsigned long hash(const char* key){
 }
 ```
 
-### Selecting Hash Function
+### Changing Hash Function
 Jenkins hash is quite good, as you can see in the diagram above, hovewer it is not the fastest one. So I decided to use a crc32 hash, because of it's great distribution characteristic and hardware support.
 ```C++
 inline unsigned long hash(const char* data){
@@ -163,6 +163,8 @@ inline int avx_cmp(const char *a, const char *b) {
     return d;
 }
 ```
+
+##Conclusion
 Attempt | Run Time | Delta
 --- | --- | ---
 1 | 17.741 | -
@@ -170,4 +172,4 @@ Attempt | Run Time | Delta
 3 | 16.879 | 4%
 4 | 15.270 | 10%
 
-__Overall perforamance gain: 17%___
+__Overall perforamance gain: 17%__
