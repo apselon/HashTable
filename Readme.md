@@ -48,7 +48,6 @@ unsigned long hash(const char* key){
 
 }
 ```
-Overall performance improved by 5%
 
 ### Selecting Hash Function
 Jenkins hash is quite good, as you can see in the diagram above, hovewer it is not the fastest one. So I decided to use a crc32 hash, because of it's great distribution characteristic and hardware support.
@@ -171,4 +170,4 @@ Attempt | Run Time | Delta
 3 | 16.879 | 4%
 4 | 15.270 | 10%
 
-__Overall perforamance gain: 17%
+__Overall perforamance gain: 17%___
