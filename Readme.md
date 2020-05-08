@@ -82,6 +82,7 @@ Now overall performance improved by 10%
 <table>
 <tr>
 <td>
+<pre>
 ```C++
 int ull_cmp(const char* a, const char* b){
 
@@ -101,11 +102,14 @@ int ull_cmp(const char* a, const char* b){
 	return 0;
 }
 ```
-<td>
+</pre>
+</td>
 
 <td>
+<pre>
 here will be asm
-<td>
+</pre>
+</td>
 </tr>
 </table>
 
