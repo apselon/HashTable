@@ -1,4 +1,7 @@
-# HashTable
+# Hash Table
+тут должны быть графики различных функций
+
+# Optimization 
 > Our goal is to get the best result with the minimum of effort.
 
 ### Hardcoding and assembling
@@ -59,11 +62,11 @@ inline unsigned long hash(const char* data){
         .intel_syntax noprefix
         lea rax, [%1]
         xor %0, %0
-    hashing:
+    looop:
         crc32 %0, byte ptr [rax]
         inc rax
         cmp byte ptr [rax], 0
-        jne hashing
+        jne looop 
         .att_syntax prefix
     )"
         : "=r"(h)
@@ -164,7 +167,7 @@ inline int avx_cmp(const char *a, const char *b) {
 }
 ```
 
-##Conclusion
+## Conclusion
 Attempt | Run Time | Delta
 --- | --- | ---
 1 | 17.741 | -
