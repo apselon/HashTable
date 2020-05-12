@@ -146,10 +146,10 @@ inline int fast_cmp(const char* a, const char* b){
 
     asm (R"(
         .intel_syntax noprefix
-        vmovdqa ymm0, YMMWORD PTR [%1]
-        vmovdqa ymm1, YMMWORD PTR [%2]
-        vpcmpeqb ymm0, ymm1
-        vpmovmskb eax, ymm0
+        movdqu xmm0, XMMWORD PTR [%1]
+        movdqu xmm1, xMMWORD PTR [%2]
+        pcmpeqb xmm0, xmm1
+        pmovmskb eax, xmm0
         cmp eax, 0xffff
         setne al
         movzx eax, al
