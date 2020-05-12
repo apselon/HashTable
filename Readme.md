@@ -141,16 +141,15 @@ int ull_cmp(const char* a, const char* b){
 ```
 Decided to improve a performace even more and rewrited function using sse.
 ```C++
-inline int avx_cmp(const char *a, const char *b) {
-
-    int d = -1;
+inline int fast_cmp(const char* a, const char* b){ 
+    int d = -1; 
 
     asm (R"(
         .intel_syntax noprefix
-        movdqu xmm0, XMMWORD PTR [%1]
-        movdqu xmm1, XMMWORD PTR [%2]
-        pcmpeqb xmm0, xmm1
-        pmovmskb eax, xmm0
+        vmovdqa ymm0, YMMWORD PTR [%1]
+        vmovdqa ymm1, YMMWORD PTR [%2]
+        vpcmpeqb ymm0, ymm1
+        vpmovmskb eax, ymm0
         cmp eax, 0xffff
         setne al
         movzx eax, al
@@ -164,6 +163,7 @@ inline int avx_cmp(const char *a, const char *b) {
         );
 
     return d;
+
 }
 ```
 
