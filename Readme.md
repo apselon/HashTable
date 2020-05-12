@@ -186,7 +186,7 @@ Attempt | Run Time | Delta
 --- | --- | ---
 1 | 17.741 | -
 2 | 17.495 | 2%
-3 | 16.879 | 4%
-4 | 15.270 | 10%
+3 | 15.270 | 14%
+4 | 12.117 | 26%
 
-__Overall perforamance gain: 17%__
+__Overall perforamance gain: 32%__
