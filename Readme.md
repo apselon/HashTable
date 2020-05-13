@@ -184,8 +184,8 @@ inline int avx_cmp(const char* a, const char* b) {
 ## Conclusion
 Attempt | Run Time | Delta
 --- | --- | ---
-1 | 17.741 | -
-2 | 17.495 | 2%
+1 | 17.808 | -
+2 | 16.495 | 2%
 3 | 15.270 | 14%
 4 | 12.117 | 26%
 
