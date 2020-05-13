@@ -141,7 +141,7 @@ int ull_cmp(const char* a, const char* b){
 ```
 Decided to improve a performace even more and rewrited function using sse.
 ```C++
-inline int avx_cmp(const char *a, const char *b) {
+inline int avx_cmp(const char* a, const char* b) {
 
     int d = -1;
 
@@ -155,6 +155,19 @@ inline int avx_cmp(const char *a, const char *b) {
         setne al
         movzx eax, al
         neg eax
+        cmp eax, 0
+        jne yexit
+
+        movdqu xmm0, XMMWORD PTR [%1 + 16]
+        movdqu xmm1, XMMWORD PTR [%2 + 16]
+        pcmpeqb xmm0, xmm1
+        pmovmskb eax, xmm0
+        cmp eax, 0xffff
+        setne al
+        movzx eax, al
+        neg eax
+
+        yexit:
         mov %0, eax
         .att_syntax
     )"
@@ -165,14 +178,15 @@ inline int avx_cmp(const char *a, const char *b) {
 
     return d;
 }
+
 ```
 
 ## Conclusion
 Attempt | Run Time | Delta
 --- | --- | ---
-1 | 17.741 | -
-2 | 17.495 | 2%
-3 | 16.879 | 4%
-4 | 15.270 | 10%
+1 | 17.808 | -
+2 | 16.495 | 2%
+3 | 15.270 | 14%
+4 | 12.117 | 26%
 
-__Overall perforamance gain: 17%__
+__Overall perforamance gain: 32%__
