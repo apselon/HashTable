@@ -190,4 +190,4 @@ Attempt | Run Time | Delta
 3 | 15.270 | 14%
 4 | 12.117 | 26%
 
-__Overall perforamance gain: 32%__
+__Overall perforamance gain: 1.47x__
