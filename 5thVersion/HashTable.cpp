@@ -2,6 +2,7 @@
 #include <climits>
 #include <immintrin.h>
 #include <cstdint>
+#include "../HashFunctions.cpp"
 #include "List.cpp"
 
 template <typename T1, typename T2>
@@ -10,28 +11,6 @@ struct Pair_t {
 	T2 second;
 };
 
-	
-unsigned long hash(const char* data){
-
-    unsigned int h = 0;
-		asm(R"(
-		.intel_syntax noprefix
-	    lea rax, [%1]
-	    xor %0, %0
-	hashing:
-	    crc32 %0, byte ptr [rax]
-	    inc rax
-	    cmp byte ptr [rax], 0
-	    jne hashing
-	    .att_syntax prefix
-	)"
-
-	    : "=r"(h)
-	    : "r"(data)
-	    : "rax", "rcx");	
-
-    return h;
-}
 
 int ull_cmp(const char* a, const char* b){
 	int d = -1;
@@ -68,20 +47,33 @@ int ull_cmp(const char* a, const char* b){
 	return d;
 }
 
-inline int avx_cmp(const char *a, const char *b) {
+inline int sse_cmp(const char* a, const char* b) {
 
 	int d = -1;
 
 	asm (R"(
 		.intel_syntax noprefix
-		movdqu xmm0, XMMWORD PTR [%1]
-		movdqu xmm1, XMMWORD PTR [%2]
+		movdqa xmm0, XMMWORD PTR [%1]
+		movdqa xmm1, XMMWORD PTR [%2]
 		pcmpeqb xmm0, xmm1
 		pmovmskb eax, xmm0
 		cmp eax, 0xffff
 		setne al
 		movzx eax, al
 		neg eax
+		cmp eax, 0
+		jne yexit
+
+		movdqa xmm0, XMMWORD PTR [%1 + 16]
+		movdqa xmm1, XMMWORD PTR [%2 + 16]
+		pcmpeqb xmm0, xmm1
+		pmovmskb eax, xmm0
+		cmp eax, 0xffff
+		setne al
+		movzx eax, al
+		neg eax
+
+		yexit:
 		mov %0, eax
 		.att_syntax
 	)"
@@ -92,7 +84,6 @@ inline int avx_cmp(const char *a, const char *b) {
 
 	return d;
 }
-
 
 template <typename key_t, typename val_t, unsigned long max_size>
 class HashTable {
@@ -105,7 +96,7 @@ public:
 	}
 
 	void insert(key_t key, val_t val){
-		unsigned long h = hash(key) % max_size;
+		unsigned long h = crc32(key) % max_size;
 		
 		Node<Pair_t<key_t, val_t>>* new_node = new Node<Pair_t<key_t, val_t>>(Pair_t<key_t, val_t>({key, val}));
 		table[h].push_front(new_node);
@@ -113,12 +104,12 @@ public:
 
 	Node<Pair_t<key_t, val_t>>* find(key_t key){
 
-		unsigned long h = hash(key) % max_size; 
+		unsigned long h = crc32(key) % max_size; 
 
 		Node<Pair_t<key_t, val_t>>* cur = table[h].head_;
 
 		while (cur != nullptr){
-			if (strcmp(key, cur->val.first) == 0) break;
+			if (sse_cmp(key, cur->val.first) == 0) break;
 
 			cur = cur->next_;
 		}

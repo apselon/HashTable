@@ -2,6 +2,7 @@
 #include <cstring>
 #include <immintrin.h>
 #include "HashTable.cpp"
+#include <fstream>
 
 int count_chars(FILE* file);
 char* read_text(FILE* file);
@@ -16,27 +17,29 @@ int main(void){
 
 	size_t len = MAX_NUM_CHARS; 
 	size_t num_lines = MAX_NUM_LINES; 
+
 	char* whole_text = read_text(input); 
 	char** text = divide_lines(whole_text, num_lines, len);
+	setvbuf(input, nullptr, _IOFBF, MAX_NUM_CHARS);
 
 	auto t = HashTable<const char*, size_t, 509>();
+
 
 	for (size_t i = 0; i < num_lines; ++i){
 		t.insert(text[i], i);
 	}
 
 	size_t d = 0;
+
 	for (size_t i = 0; i < num_lines; ++i){
 		d = t.find(text[i])->val.second;
-		if (d != i) printf("wrong: got %lu, expected %lu\n", d, i);
 	}
 
-	printf("Finished!\n");
 
 	fclose(input);
 
-	delete [] whole_text;
 	delete [] text;
+	delete [] whole_text;
 
 	return 0;
 }
@@ -55,6 +58,8 @@ int count_chars(FILE* file){
 char* read_text(FILE* file){
 
 	char* whole_text = new char[MAX_NUM_CHARS + 10]; 
+	//char* whole_text = (char*)aligned_alloc(32, MAX_NUM_CHARS + 10); 
+
 	char* start = whole_text;
 
 	for (unsigned int i = 0; i < MAX_NUM_LINES; ++i){
@@ -88,7 +93,7 @@ long int count_lines(char* whole_text, long int num_chars, char divider){
 
 char** divide_lines(char* whole_text, long int num_lines, long int num_chars){
 
-	char** lines = new char* [num_lines + 10]();
+	char** lines = new char* [num_lines + 32]();
 
 	for (int i = 0; i < num_lines; ++i){
 			 lines[i] = whole_text;
