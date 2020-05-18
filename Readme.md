@@ -183,8 +183,8 @@ inline int avx_cmp(const char* a, const char* b) {
 
 ## Conclusion
 
-My|-O1|-O2|-O3
---- | --- | ---
+Me|-O1|-O2|-O3
+--- | --- | --- | ---
 1.03|2.50|1.9|1.70
 -|2.5x|1.9x|1.7x
 
