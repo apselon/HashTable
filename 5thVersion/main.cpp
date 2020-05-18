@@ -22,17 +22,18 @@ int main(void){
 	char** text = divide_lines(whole_text, num_lines, len);
 	setvbuf(input, nullptr, _IOFBF, MAX_NUM_CHARS);
 
-	auto t = HashTable<const char*, size_t, 509>();
+	auto t = HashTable<const char*, size_t, 349963>();
 
 
 	for (size_t i = 0; i < num_lines; ++i){
 		t.insert(text[i], i);
 	}
 
-	size_t d = 0;
 
+	for (int j = 0; j < 20; ++j){
 	for (size_t i = 0; i < num_lines; ++i){
-		d = t.find(text[i])->val.second;
+		t.find(text[i])->val.second;
+	}
 	}
 
 

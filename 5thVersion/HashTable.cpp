@@ -96,7 +96,28 @@ public:
 	}
 
 	void insert(key_t key, val_t val){
-		unsigned long h = crc32(key) % max_size;
+
+		  unsigned long h = 0;
+    asm(R"(
+        .intel_syntax noprefix
+        lea rax, [%1]
+        xor %0, %0
+
+    loooooop%=:
+        crc32 %0, byte ptr [rax]
+        inc rax
+        cmp byte ptr [rax], 0
+
+        jne loooooop%=
+
+        .att_syntax prefix
+    )"
+        : "=r"(h)
+        : "r"(key)
+        : "rax", "rcx"
+    );
+
+	h = h % max_size;
 		
 		Node<Pair_t<key_t, val_t>>* new_node = new Node<Pair_t<key_t, val_t>>(Pair_t<key_t, val_t>({key, val}));
 		table[h].push_front(new_node);
@@ -104,11 +125,33 @@ public:
 
 	Node<Pair_t<key_t, val_t>>* find(key_t key){
 
-		unsigned long h = crc32(key) % max_size; 
+
+		  unsigned long h = 0;
+    asm(R"(
+        .intel_syntax noprefix
+        lea rax, [%1]
+        xor %0, %0
+
+    loooooop%=:
+        crc32 %0, byte ptr [rax]
+        inc rax
+        cmp byte ptr [rax], 0
+
+        jne loooooop%=
+
+        .att_syntax prefix
+    )"
+        : "=r"(h)
+        : "r"(key)
+        : "rax", "rcx"
+    );
+
+	h = h % max_size;
 
 		Node<Pair_t<key_t, val_t>>* cur = table[h].head_;
 
 		while (cur != nullptr){
+
 			if (sse_cmp(key, cur->val.first) == 0) break;
 
 			cur = cur->next_;
