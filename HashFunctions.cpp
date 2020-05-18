@@ -47,8 +47,11 @@ unsigned long one_at_a_time(const char* key) {
 
 	unsigned long hash = 0;
 
-	while (*key) {
-		hash += *(key++);
+	int i = 0;
+	int len = strlen(key);
+
+	while (i != len) {
+		hash += key[i++];
 		hash += hash << 10;
 		hash ^= hash >> 6;
 	}
@@ -102,4 +105,29 @@ unsigned long one_at_a_time_asm(const char* key){
 	);
 
 	return d;
+}
+
+unsigned long crc32(const char* data){
+
+    unsigned long h = 0;
+    asm(R"(
+        .intel_syntax noprefix
+        lea rax, [%1]
+        xor %0, %0
+
+    loooooop%=:
+        crc32 %0, byte ptr [rax]
+        inc rax
+        cmp byte ptr [rax], 0
+
+        jne loooooop%=
+
+        .att_syntax prefix
+    )"
+        : "=r"(h)
+        : "r"(data)
+        : "rax", "rcx"
+	);
+
+    return h;
 }

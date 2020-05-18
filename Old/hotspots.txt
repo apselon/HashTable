@@ -1,0 +1,35 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+# dso: a.out
+#
+# Total Lost Samples: 0
+#
+# Samples: 78  of event 'cpu-clock:u'
+# Event count (approx.): 19500000
+#
+#       Overhead  Command / Shared Object / Symbol
+# ..............  .......................................................................................................................................
+#
+   100.00%        a.out  
+       70.51%        a.out        
+          33.33%        [.] find_lable
+          17.95%        [.] rolling_hash
+           7.69%        [.] cmp_slow
+           6.41%        [.] ListNS::List<HashTableNS::Pair_t<char const*, int> >::head
+           1.28%        [.] HashTableNS::HashTable<char const*, int, &(rolling_hash(char const*)), &(cmp_slow(char const*, char const*)), 2953ul>::insert
+           1.28%        [.] ListNS::List<HashTableNS::Pair_t<char const*, int> >::Node::next
+           1.28%        [.] ListNS::List<HashTableNS::Pair_t<char const*, int> >::push_back
+           1.28%        [.] strcmp@plt
+
+
+# Samples: 6  of event 'faults:u'
+# Event count (approx.): 1252
+#
+#       Overhead  Command / Shared Object / Symbol
+# ..............  ................................
+#
+
+
+#
+# (Tip: For hierarchical output, try: perf report --hierarchy)
+#
