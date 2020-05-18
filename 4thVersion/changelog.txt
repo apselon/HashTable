@@ -1,4 +1,0 @@
-1. Inlined and detemplated hash function
-2. Changed hashfunction to crc32
-3. Aligned all strings
-4. Rewrited cmp function to use avx
