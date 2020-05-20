@@ -184,9 +184,9 @@ inline int avx_cmp(const char* a, const char* b) {
 ![](Images/fasto1.png)
 ## Conclusion
 
-Me|-O1|-O2|-O3
+Me, s|-O1, s|-O2, s|-O3, s
 --- | --- | --- | ---
 1.03|2.50|1.9|1.70
--|2.5x|1.9x|1.7x
+1x|2.5x|1.9x|1.7x
 
-__Overall: 2.5x__
+__Best result: 1.7x agains -O3__
