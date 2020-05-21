@@ -187,4 +187,4 @@ Me, s|-O1, s|-O2, s|-O3, s
 1.03|2.50|1.9|1.70
 1x|2.5x|1.9x|1.7x
 
-__Best result: 1.7x agains -O3__
+__Best result: 1.7x against -O3__
